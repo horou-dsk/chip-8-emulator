@@ -1,0 +1,13 @@
+[package]
+name = "chip-8-emulator"
+version = "0.1.0"
+authors = ["Morgana <xly_tk@foxmail.com>"]
+edition = "2018"
+build = "build.rs"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+piston_window = "*"
+chrono = "0.4"
+sdl2 = "0.34"
+rand = "0.7"

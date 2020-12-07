@@ -1,16 +1,12 @@
 [package]
-name = "chip-8-emulator"
+name = "desktop"
 version = "0.1.0"
 authors = ["Morgana <xly_tk@foxmail.com>"]
 edition = "2018"
-build = "build.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rand = { version = "0.7", features = ["wasm-bindgen", "getrandom"] }
-
-[workspace]
-members = [
-    "desktop",
-    "web-wasm"
-]
+chrono = "0.4"
+sdl2 = "0.34"
+chip-8-emulator = { path = "../" }

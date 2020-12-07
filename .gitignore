@@ -1,2 +1,6 @@
 /target
 /.idea
+dist/
+pkg/
+.cache/
+node_modules/

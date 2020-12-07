@@ -48,6 +48,25 @@ impl Cpu {
         }
     }
 
+    pub fn new_wasm() -> Self {
+        Self {
+            v: [0; 16],
+            mem: [0u8; 0x1000],
+            i: 0x0000,
+            pc: 0x0200,
+            keys: [false; 16],
+            stack: [0; 16],
+            sp: 0,
+            delay: 0,
+            sound: 0,
+            gfx: [0; 64 * 32],
+        }
+    }
+
+    pub fn load_rom(&mut self, rom: Vec<u8>) {
+        Self::init_memory(&mut self.mem, rom);
+    }
+
     fn init_memory(mem: &mut [u8; 0x1000], rom: Vec<u8>) {
         for i in 0..rom.len() {
             mem[i + 0x200] = rom[i];
@@ -56,52 +75,6 @@ impl Cpu {
             mem[i] = FONTS[i];
         }
     }
-
-    /*fn get_ins(&self) -> (&str, &str, u16, u16) {
-        let pc = self.pc as usize;
-        let ins = (self.mem[pc] << 8 | self.mem[pc + 1]) as u16;
-        match ins {
-            // 00E0 - CLS
-            0x00E0 => {
-                return ("00E0", "CLS", 0, 0)
-            },
-            // 00EE - RET
-            0x00EE => {
-                return ("00EE", "RET", 0, 0)
-            }
-            _ => {}
-        };
-        match ins >> 12 {
-            // 0NNN - SYS addr
-            0x0 => {
-                return ("0NNN", "SYS", ins & 0x0FFF, 0)
-            }
-            // 1NNN - JMP addr
-            0x1 => {
-                return ("1NNN", "JMP", ins & 0x0FFF, 0)
-            }
-            // 2NNN - CALL addr
-            0x2 => {
-                return ("2NNN", "CALL", ins & 0x0FFF, 0)
-            }
-            // 3XNN - SE Vx, byte
-            0x3 => {
-                return ("3XNN", "SE", (ins & 0x0F00) >> 8, ins & 0x00FF)
-            }
-            // 4XNN - SNE VX, BYTE
-            0x4 => {
-                return ("4XNN", "SNE", (ins & 0x0F00) >> 8, ins & 0x00FF)
-            }
-            // 5XY0 - SE VX, VY
-            0x5 => {
-                if ins & 0x000F == 0x0 {
-                    return ("5XY0", "SE", (ins & 0x0F00) >> 8, (ins & 0x00F0) >> 4)
-                }
-            }
-            _ => {}
-        }
-        ("", "", 0, 0)
-    }*/
 
     pub fn step(&mut self) {
         let pc = self.pc as usize;
@@ -440,9 +413,5 @@ impl Cpu {
                 }
             }
         };
-    }
-
-    fn next(&self) {
-
     }
 }

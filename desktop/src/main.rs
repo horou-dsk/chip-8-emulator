@@ -32,7 +32,7 @@ fn main() {
     let mut rom_data = Vec::new();
     match rom_file {
         Ok(mut file) => {
-            file.read_to_end(&mut rom_data);
+            file.read_to_end(&mut rom_data).unwrap();
         }
         Err(_) => {
             panic!("rom load failed!");
@@ -40,8 +40,6 @@ fn main() {
     }
     let mut cpu = Cpu::new(rom_data);
     let mut next_game_tick = Local::now().timestamp_nanos() as f64;
-    let mut previous = Local::now().timestamp_millis();
-    let mut fps = 0;
     'running: loop {
         next_game_tick += MS_PER_UPDATE;
         let sleep_time = next_game_tick - Local::now().timestamp_nanos() as f64;
@@ -50,13 +48,6 @@ fn main() {
         canvas.set_draw_color(Color::RGB(16, 29, 43));
         canvas.clear();
 
-        let current = Local::now().timestamp_millis();
-        if current - previous >= 1000 {
-            // println!("FPS = {}", fps);
-            previous = current;
-            fps = 0;
-        }
-        fps += 1;
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit {..} |
@@ -159,7 +150,7 @@ fn main() {
                 Event::KeyUp { keycode: Some(Keycode::V), .. } => {
                     cpu.keys[15] = false;
                 },
-                e => {
+                _ => {
                     // println!("{:?}", e);
                 }
             }
@@ -178,7 +169,7 @@ fn main() {
             if px != 0 {
                 let rect = Rect::new((i % 64 * 10) as i32, (i / 64 * 10) as i32, 10, 10);
                 canvas.fill_rect(rect).unwrap();
-                canvas.draw_rect(rect);
+                canvas.draw_rect(rect).unwrap();
             }
         }
 
@@ -188,7 +179,7 @@ fn main() {
         cpu.step_num += 1;
         canvas.present();
         if sleep_time > 0.0 {
-            ::std::thread::sleep(Duration::new(0, sleep_time as u32));
+            sleep(Duration::new(0, sleep_time as u32));
         }
     }
 }

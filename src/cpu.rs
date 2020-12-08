@@ -24,10 +24,11 @@ pub struct Cpu {
     mem: [u8; 0x1000], // 内存
     stack: [u16; 16],
     pub keys: [bool; 16],
-    sp: u8, // 栈寄存器
+    sp: u8, // 栈指针
     delay: u8,
     sound: u8,
     pub gfx: [u8; 2048],
+    pub step_num: usize,
 }
 
 impl Cpu {
@@ -45,6 +46,7 @@ impl Cpu {
             delay: 0,
             sound: 0,
             gfx: [0; 64 * 32],
+            step_num: 0,
         }
     }
 
@@ -60,6 +62,7 @@ impl Cpu {
             delay: 0,
             sound: 0,
             gfx: [0; 64 * 32],
+            step_num: 0,
         }
     }
 
@@ -86,9 +89,6 @@ impl Cpu {
                     self.gfx[i] = 0;
                 }
                 self.pc += 2;
-                // self.gfx.iter().for_each(|v| {
-                //     *&v = 0;
-                // });
             },
             // 00EE - RET
             0x00EE => {
@@ -99,8 +99,7 @@ impl Cpu {
                 match ins >> 12 {
                     // 0NNN - SYS addr
                     0x0 => {
-                        println!("????");
-                        self.pc += 2;
+                        // self.pc += 2;
                     }
                     // 1NNN - JMP addr
                     0x1 => {
@@ -332,10 +331,10 @@ impl Cpu {
                                 for i in 0..self.keys.len() {
                                     if self.keys[i] {
                                         self.v[x] = i as u8;
+                                        self.pc += 2;
                                         break;
                                     }
                                 }
-                                self.pc += 2;
                             }
                             // FX15 - 将延迟定时器设置为寄存器VX的值
                             0x15 => {
@@ -405,13 +404,19 @@ impl Cpu {
                         println!("无指令");
                     }
                 };
-                if self.delay > 0 {
-                    self.delay -= 1;
-                }
-                if self.sound > 0 {
-                    self.sound -= 1;
-                }
             }
         };
+    }
+
+    pub fn update_timers(&mut self) {
+        if self.delay > 0 {
+            self.delay -= 1;
+        }
+        if self.sound > 0 {
+            if self.sound == 1 {
+                // Todo: Audio
+            }
+            self.sound -= 1;
+        }
     }
 }

@@ -4,3 +4,4 @@ dist/
 pkg/
 .cache/
 node_modules/
+/SDL2.dll

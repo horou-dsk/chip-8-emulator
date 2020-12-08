@@ -61,28 +61,35 @@ impl ByteStream {
 }
 
 #[wasm_bindgen]
-pub fn get_keys() -> ByteStream {
-    let cpu = (*CPU).clone();
-    let cpu = cpu.read().unwrap();
+pub fn get_gfx() -> ByteStream {
+    let cpu = (*CPU).read().unwrap();
     ByteStream::new(&cpu.gfx)
 }
 
 #[wasm_bindgen]
 pub fn set_rom(rom: Vec<u8>) {
-    let cpu = (*CPU).clone();
-    let mut cpu = cpu.write().unwrap();
+    let mut cpu = (*CPU).write().unwrap();
     cpu.load_rom(rom);
     // (*CPU).borrow_mut().load_rom(rom);
 }
 
 #[wasm_bindgen]
-pub fn step() {
-    let cpu = (*CPU).clone();
-    let mut cpu = cpu.write().unwrap();
-    for _ in 0..2 {
+pub fn step(step_num: u8) {
+    let mut cpu =  (*CPU).write().unwrap();
+    for _ in 0..step_num {
         cpu.step();
     }
+    if cpu.step_num % 2 != 0 {
+        cpu.update_timers();
+    }
+    cpu.step_num += 1;
     // (*CPU).borrow_mut().step();
+}
+
+#[wasm_bindgen]
+pub fn set_key(index: usize, press_state: bool) {
+    let mut cpu = (*CPU).write().unwrap();
+    cpu.keys[index] = press_state;
 }
 //
 // #[cfg(test)]

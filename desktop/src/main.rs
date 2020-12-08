@@ -166,11 +166,12 @@ fn main() {
         }
         // The rest of the game loop goes here...
 
-        for _ in 0..3 {
+        for _ in 0..10 {
             cpu.step();
         }
         canvas.set_draw_color(Color::RGB(0x8F, 0x91, 0x86));
         // let mut gfx = [0u8; 2048];
+        // draw
         for i in 0..2048 {
             // println!("x = {}, y = {}", i % 64, i / 64);
             let px = cpu.gfx[i];
@@ -181,6 +182,10 @@ fn main() {
             }
         }
 
+        if cpu.step_num % 2 == 0 {
+            cpu.update_timers();
+        }
+        cpu.step_num += 1;
         canvas.present();
         if sleep_time > 0.0 {
             ::std::thread::sleep(Duration::new(0, sleep_time as u32));

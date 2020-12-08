@@ -70,7 +70,6 @@ pub fn get_gfx() -> ByteStream {
 pub fn set_rom(rom: Vec<u8>) {
     let mut cpu = (*CPU).write().unwrap();
     cpu.load_rom(rom);
-    // (*CPU).borrow_mut().load_rom(rom);
 }
 
 #[wasm_bindgen]
@@ -83,7 +82,6 @@ pub fn step(step_num: u8) {
         cpu.update_timers();
     }
     cpu.step_num += 1;
-    // (*CPU).borrow_mut().step();
 }
 
 #[wasm_bindgen]

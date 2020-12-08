@@ -3,7 +3,7 @@
 Run in Desktop
 
 ```shell
-Cargo run -p desktop --release
+cargo run -p desktop --release
 ```
 
 Run in Web

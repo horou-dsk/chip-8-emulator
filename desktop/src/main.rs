@@ -1,3 +1,6 @@
+// 设置窗口显示，隐藏控制台
+#![windows_subsystem = "windows"]
+
 use chip_8_emulator::cpu::Cpu;
 use chrono::Local;
 use sdl2::pixels::Color;
